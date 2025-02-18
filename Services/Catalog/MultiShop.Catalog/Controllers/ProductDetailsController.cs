@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MultiShop.Catalog.Dtos.ProductDetailDtos;
 using MultiShop.Catalog.Services.ProductDetailServices;
 
 namespace MultiShop.Catalog.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductDetailsController : ControllerBase
     {
         private readonly IProductDetailService _productDetailService;
-
-        public ProductDetailsController(IProductDetailService productDetailService)
+        public ProductDetailsController(IProductDetailService ProductDetailService)
         {
-            _productDetailService = productDetailService;
+            _productDetailService = ProductDetailService;
         }
 
         [HttpGet]
@@ -33,21 +34,21 @@ namespace MultiShop.Catalog.Controllers
         public async Task<IActionResult> CreateProductDetail(CreateProductDetailDto createProductDetailDto)
         {
             await _productDetailService.CreateProductDetailAsync(createProductDetailDto);
-            return Ok();
+            return Ok("Ürün detayı başarıyla eklendi");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteProductDetail(string id)
         {
             await _productDetailService.DeleteProductDetailAsync(id);
-            return Ok();
+            return Ok("Ürün detayı başarıyla silindi");
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProductDetail(UpdateProductDetailDto updateProductDetailDto)
         {
             await _productDetailService.UpdateProductDetailAsync(updateProductDetailDto);
-            return Ok();
+            return Ok("Ürün detayı başarıyla güncellendi");
         }
     }
 }
