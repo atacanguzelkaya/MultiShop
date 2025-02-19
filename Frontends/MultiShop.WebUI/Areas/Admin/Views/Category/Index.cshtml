@@ -16,6 +16,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Kategori Adı</th>
+                                <th>Kategori Resmi</th>
                                 <th>Sil</th>
                                 <th>Güncelle</th>
                             </tr>
@@ -27,6 +28,7 @@
                                 <tr>
                                     <th scope="row">@count</th>
                                     <td>@item.CategoryName</td>
+                                    <td><img src="@item.ImageUrl" style="width:50px; height:50px;" /> </td>
                                     <td><a href="/Admin/Category/DeleteCategory/@item.CategoryID" class="btn btn-danger">Sil</a></td>
                                     <td><a href="/Admin/Category/UpdateCategory/@item.CategoryID" class="btn btn-success">Güncelle</a></td>
                                 </tr>

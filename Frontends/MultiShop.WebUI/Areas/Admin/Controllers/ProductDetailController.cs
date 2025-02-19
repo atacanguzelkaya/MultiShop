@@ -70,7 +70,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         {
             ProductDetailViewbagList();
             var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.GetAsync("https://localhost:7070/api/ProductDetails/" + id);
+            var responseMessage = await clint.GetAsync("https://localhost:7070/api/ProductDetails/GetProductDetailByProductId?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
