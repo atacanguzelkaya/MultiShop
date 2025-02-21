@@ -15,54 +15,6 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
-        [AllowAnonymous]
-        [Route("Index")]
-        public async Task<IActionResult> Index()
-        {
-            ProductDetailViewbagList();
-            var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.GetAsync("https://localhost:7070/api/ProductDetails");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultProductDetailDto>>(jsonData);
-                return View(values);
-            }          
-            return View();
-        }
-        [HttpGet]
-        [Route("CreateProductDetail")]
-        public IActionResult CreateProductDetail()
-        {
-            ProductDetailViewbagList();
-            return View();
-        }
-        [HttpPost]
-        [Route("CreateProductDetail")]
-        public async Task<IActionResult> CreateProductDetail(CreateProductDetailDto createProductDetailDto)
-        {
-            var clint = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createProductDetailDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await clint.PostAsync("https://localhost:7070/api/ProductDetails", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "ProductDetail", new { area = "Admin" });
-            }
-            return View();     
-        }
-
-        [Route("DeleteProductDetail/{id}")]
-        public async Task<IActionResult> DeleteProductDetail(string id)
-        {
-            var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.DeleteAsync("https://localhost:7070/api/ProductDetails?id=" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "ProductDetail", new { area = "Admin" });
-            }
-            return View();
-        }
 
         [Route("UpdateProductDetail/{id}")]
         [HttpGet]
@@ -70,7 +22,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         {
             ProductDetailViewbagList();
             var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.GetAsync("https://localhost:7070/api/ProductDetails/GetProductDetailByProductId?id=" + id);
+            var responseMessage = await clint.GetAsync("https://localhost:7070/api/ProductDetails/GetProductDetailByProductId/" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -81,15 +33,29 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         }
         [Route("UpdateProductDetail/{id}")]
         [HttpPost]
-        public async Task<IActionResult> UpdateProductDetail(UpdateProductDetailDto updateProductDetailDto)
+        public async Task<IActionResult> UpdateProductDetail(UpdateProductDetailDto updateProductDetailDto, CreateProductDetailDto createProductDetailDto, string id)
         {
-            var clint = _httpClientFactory.CreateClient();
+            updateProductDetailDto.ProductId = id;
+            createProductDetailDto.ProductId = id;
+            if (!ModelState.IsValid || string.IsNullOrEmpty(updateProductDetailDto.ProductId))
+            {
+                var clientCreate = _httpClientFactory.CreateClient();
+                var jsonDataCreate = JsonConvert.SerializeObject(createProductDetailDto);
+                StringContent stringContentCreate = new StringContent(jsonDataCreate, Encoding.UTF8, "application/json");
+                var responseMessageCreate = await clientCreate.PostAsync("https://localhost:7070/api/ProductDetails", stringContentCreate);
+                if (responseMessageCreate.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Product", new { area = "Admin" });
+                }
+                return View();
+            }
+            var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateProductDetailDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await clint.PutAsync("https://localhost:7070/api/ProductDetails/", stringContent);
+            var responseMessage = await client.PutAsync("https://localhost:7070/api/ProductDetails", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "ProductDetail", new { area = "Admin" });
+                return RedirectToAction("Index", "Product", new { area = "Admin" });
             }
             return View();
         }
