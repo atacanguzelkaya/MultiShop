@@ -16,7 +16,7 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponents
         {
             ViewBag.pid = id;
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7074/api/Comments/CommentListByProductId/" + id);
+            var responseMessage = await client.GetAsync("https://localhost:7075/api/Comments/CommentListByProductId/" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
