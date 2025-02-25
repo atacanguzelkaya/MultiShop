@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MultiShop.WebUI.Handlers;
+using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
 using MultiShop.WebUI.Services.Concretes;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Settings;
@@ -12,7 +13,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCo
     opt.LoginPath = "/Login/Index/";
     opt.LogoutPath = "/Login/LogOut/";
     opt.AccessDeniedPath = "/Pages/AccessDenied/";
-    opt.Cookie.HttpOnly = true;
+    opt.Cookie.HttpOnly = false;
     opt.Cookie.SameSite = SameSiteMode.Strict;
     opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     opt.Cookie.Name = "MultiShopJwt";
@@ -24,9 +25,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         opt.LoginPath = "/Login/Index/";
         opt.ExpireTimeSpan = TimeSpan.FromDays(5);
         opt.Cookie.Name = "MultiShopCookie";
-        opt.SlidingExpiration = true;
+        opt.SlidingExpiration = false;
     });
-
 
 builder.Services.AddHttpContextAccessor();
 
@@ -37,6 +37,9 @@ builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("Cli
 builder.Services.Configure<ServiceApiSettings>(builder.Configuration.GetSection("ServiceApiSettings"));
 
 builder.Services.AddScoped<ResourceOwnerPasswordTokenHandler>();
+builder.Services.AddScoped<ClientCredentialTokenHandler>();
+
+builder.Services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>();
 
 var values = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();
 
@@ -44,6 +47,11 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
     opt.BaseAddress = new Uri(values.IdentityServerUrl);
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
+
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}");
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
