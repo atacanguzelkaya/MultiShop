@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.WebUI.Dtos.CatalogDtos.FeatureDtos;
-using Newtonsoft.Json;
-using System.Text;
+using MultiShop.WebUI.Services.CatalogServices.FeatureServices;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
@@ -10,96 +8,65 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     [Route("Admin/Feature")]
     public class FeatureController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        public FeatureController(IHttpClientFactory httpClientFactory)
+        private readonly IFeatureService _featureService;
+        public FeatureController(IFeatureService featureService)
         {
-            _httpClientFactory = httpClientFactory;
+            _featureService = featureService;
         }
-        [AllowAnonymous]
+
+        void FeatureViewBagList()
+        {
+            ViewBag.v1 = "Ana Sayfa";
+            ViewBag.v2 = "Öne Çıkan Alanlar";
+            ViewBag.v3 = "Öne Çıkan Alan Listesi";
+            ViewBag.v0 = "Ana Sayfa Öne Çıkan Alan İşlemleri";
+        }
+
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
-            FeatureViewbagList();
-            var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.GetAsync("https://localhost:7070/api/Features");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultFeatureDto>>(jsonData);
-                return View(values);
-            }          
-            return View();
+            FeatureViewBagList();
+            var values = await _featureService.GetAllFeatureAsync();
+            return View(values);
         }
+
         [HttpGet]
         [Route("CreateFeature")]
         public IActionResult CreateFeature()
         {
-            FeatureViewbagList();
+            FeatureViewBagList();
             return View();
         }
+
         [HttpPost]
         [Route("CreateFeature")]
         public async Task<IActionResult> CreateFeature(CreateFeatureDto createFeatureDto)
         {
-            var clint = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createFeatureDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await clint.PostAsync("https://localhost:7070/api/Features", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Feature", new { area = "Admin" });
-            }
-            return View();     
+            await _featureService.CreateFeatureAsync(createFeatureDto);
+            return RedirectToAction("Index", "Feature", new { area = "Admin" });
         }
 
         [Route("DeleteFeature/{id}")]
         public async Task<IActionResult> DeleteFeature(string id)
         {
-            var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.DeleteAsync("https://localhost:7070/api/Features?id=" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Feature", new { area = "Admin" });
-            }
-            return View();
+            await _featureService.DeleteFeatureAsync(id);
+            return RedirectToAction("Index", "Feature", new { area = "Admin" });
         }
 
         [Route("UpdateFeature/{id}")]
         [HttpGet]
         public async Task<IActionResult> UpdateFeature(string id)
         {
-            FeatureViewbagList();
-            var clint = _httpClientFactory.CreateClient();
-            var responseMessage = await clint.GetAsync("https://localhost:7070/api/Features/" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<UpdateFeatureDto> (jsonData);
-                return View(values);
-            }
-            return View();
+            FeatureViewBagList();
+            var values = await _featureService.GetByIdFeatureAsync(id);
+            return View(values);
         }
         [Route("UpdateFeature/{id}")]
         [HttpPost]
         public async Task<IActionResult> UpdateFeature(UpdateFeatureDto updateFeatureDto)
         {
-            var clint = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateFeatureDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await clint.PutAsync("https://localhost:7070/api/Features/", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Feature", new { area = "Admin" });
-            }
-            return View();
-        }
-
-        void FeatureViewbagList()
-        {
-            ViewBag.v1 = "Ana Sayfa";
-            ViewBag.v2 = "Öne Çıkan Alanlar";
-            ViewBag.v3 = "Öne Çıkan Alan Listesi";
-            ViewBag.v0 = "Ana Sayfa Öne Çıkan Alan İşlemleri";
+            await _featureService.UpdateFeatureAsync(updateFeatureDto);
+            return RedirectToAction("Index", "Feature", new { area = "Admin" });
         }
     }
 }

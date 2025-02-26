@@ -5,7 +5,7 @@ using MultiShop.Comment.Entities;
 
 namespace MultiShop.Comment.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase

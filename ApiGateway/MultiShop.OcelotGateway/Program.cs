@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
