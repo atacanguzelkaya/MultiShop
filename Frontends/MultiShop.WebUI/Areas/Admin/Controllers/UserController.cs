@@ -14,9 +14,17 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             _userIdentityService = userIdentityService;
             _cargoCustomerService = cargoCustomerService;
         }
+        void UserViewbagList()
+        {
+            ViewBag.v1 = "Ana Sayfa";
+            ViewBag.v2 = "Kullanıcılar";
+            ViewBag.v3 = "Kullanıcılar Listesi";
+            ViewBag.v0 = "Kullanıcılar Listesi";
+        }
 
         public async Task<IActionResult> UserList()
         {
+            UserViewbagList();
             var values = await _userIdentityService.GetAllUserListAsync();
             return View(values);
         }
