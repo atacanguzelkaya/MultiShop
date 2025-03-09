@@ -17,17 +17,34 @@ namespace MultiShop.WebUI.Controllers
             _identityService = identityService;
         }
 
+        void LoginViewBag()
+        {
+            ViewBag.directory1 = "MultiShop";
+            ViewBag.directory2 = "Giriş Sayfası";
+            ViewBag.directory3 = "";
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
+            LoginViewBag();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(SignInDto signInDto)
         {
-            await _identityService.SignIn(signInDto);
-            return RedirectToAction("Index", "Default");
+            bool result = await _identityService.SignIn(signInDto);
+            if (result)
+            {
+                return RedirectToAction("Index", "Default");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Hatalı giriş, lütfen tekrar deneyin.");
+                LoginViewBag();
+                return View();
+            }
         }
     }
 }

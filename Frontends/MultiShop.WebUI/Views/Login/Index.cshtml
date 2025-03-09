@@ -5,49 +5,55 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>MultiShop Login Sayfası</title>
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <!-- Font-->
-    <link rel="stylesheet" type="text/css" href="~/colorlib-regform-30/css/opensans-font.css">
-    <link rel="stylesheet" type="text/css" href="~/colorlib-regform-30/fonts/line-awesome/css/line-awesome.min.css">
-    <!-- Jquery -->
-    <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
-    <!-- Main Style Css -->
-    <link rel="stylesheet" href="~/colorlib-regform-30/css/style.css" />
-</head>
-<body class="form-v4">
-    <div class="page-content">
-        <div class="form-v4-content">
-            <div class="form-left">
-                <h2>MultiShop E-Ticaret</h2>
-                <p class="text-1">MultiShop projemiz üzerinden e-ticaret işlemlerini gerçekleştirebilmek, indirimli ürünler ve fırsatlardan haberdar olmak adına hemen oturum açma işlemini gerçekleştirin.</p>
-                <p class="text-2">Alışverişinizi gerçekleştirebilmek, sepetinize ürün eklemek ve ürün listesini görebilmek için oturum açmanız gerekmektedir. Bir hesabınız yoksa aşağıda kayıt olabilirsiniz.</p>
-                <div class="form-left-last">
-                    <a href="/Register/Index/" style="height:35px" class="account">Kayıt Ol</a>
+@await Component.InvokeAsync("_HeadUILayoutComponentPartial")
+<body>
+    @await Component.InvokeAsync("_TopbarUILayoutComponentPartial")
+    @await Component.InvokeAsync("_NavbarUILayoutComponentPartial")
+    @await Component.InvokeAsync("_DirectoryAlertUILayoutComponentPartial")
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <!-- (About and Register) -->
+            <div class="col-md-6 col-lg-5 d-flex align-items-stretch">
+                <div class="bg-white p-4 rounded shadow w-100">
+                    <h2 class="mb-3 text-center">MultiShop E-Ticaret</h2>
+                    <p class="text-muted">MultiShop projemiz üzerinden e-ticaret işlemlerini gerçekleştirebilmek, indirimli ürünler ve fırsatlardan haberdar olmak adına hemen oturum açma işlemini gerçekleştirin.</p>
+                    <p class="text-muted">Alışverişinizi gerçekleştirebilmek, sepetinize ürün eklemek ve ürün listesini görebilmek için oturum açmanız gerekmektedir. Bir hesabınız yoksa aşağıda kayıt olabilirsiniz.</p>
+                    <div class="text-center mt-5">
+                        <a href="/Register/Index/" class="btn btn-primary w-100">Kayıt Ol</a>
+                    </div>
                 </div>
             </div>
-            <form class="form-detail" method="post">
-                <h2>MultiShop Giriş Formu</h2>
-                <div class="form-row">
-                    <label for="your_username">Kullanıcı Adınız</label>
-                    <input type="text" id="your_username" asp-for="Username" class="input-text" required>
-                </div>
-                <div class="form-row">
-                    <label for="your_password">Şifreniz</label>
-                    <input type="password" id="your_password" asp-for="Password" class="input-text" required>
-                </div>
 
-                <div class="form-row-last">
-                    <button class="register" style="height:35px">Giriş Yap</button>
+            <!-- (Login Form) -->
+            <div class="col-md-6 col-lg-5 d-flex align-items-stretch">
+                <div class="bg-white p-4 rounded shadow w-100">
+                    <h2 class="mb-3 text-center">MultiShop Giriş Formu</h2>
+                    <form class="form-detail" method="post">
+                        <div class="mb-3">
+                            <label for="your_username" class="form-label">Kullanıcı Adınız</label>
+                            <input type="text" id="your_username" name="Username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="your_password" class="form-label">Şifreniz</label>
+                            <input type="password" id="your_password" name="Password" class="form-control" required>
+                        </div>
+
+                        <div>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-5">
+                            <button type="submit" class="btn btn-primary w-100 mt-5">Giriş Yap</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    @await Component.InvokeAsync("_FooterUILayoutComponentPartial")
+
+    @await Component.InvokeAsync("_ScriptUILayoutComponentPartial")
 </body>
 </html>

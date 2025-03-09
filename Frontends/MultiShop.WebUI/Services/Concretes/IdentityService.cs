@@ -79,64 +79,86 @@ namespace MultiShop.WebUI.Services.Concretes
 
         public async Task<bool> SignIn(SignInDto signInDto)
         {
-            var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            try
             {
-                Address = _serviceApiSettings.IdentityServerUrl,
-                Policy = new DiscoveryPolicy
+                var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
                 {
-                    RequireHttps = false
+                    Address = _serviceApiSettings.IdentityServerUrl,
+                    Policy = new DiscoveryPolicy
+                    {
+                        RequireHttps = false
+                    }
+                });
+
+                if (discoveryEndPoint.IsError)
+                {
+                    throw new Exception($"Discovery document error: {discoveryEndPoint.Error}");
                 }
-            });
 
-            var passwordTokenRequest = new PasswordTokenRequest
-            {
-                ClientId = _clientSettings.MultiShopManagerClient.ClientId,
-                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
-                UserName = signInDto.Username,
-                Password = signInDto.Password,
-                Address = discoveryEndPoint.TokenEndpoint
-            };
-
-            var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
-
-            var userInfoRequest = new UserInfoRequest
-            {
-                Token = token.AccessToken,
-                Address = discoveryEndPoint.UserInfoEndpoint
-            };
-
-            var userValues = await _httpClient.GetUserInfoAsync(userInfoRequest);
-
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
-
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            var authenticationProperties = new AuthenticationProperties();
-
-            authenticationProperties.StoreTokens(new List<AuthenticationToken>()
-            {
-                new AuthenticationToken
+                var passwordTokenRequest = new PasswordTokenRequest
                 {
-                    Name=OpenIdConnectParameterNames.AccessToken,
-                    Value = token.AccessToken
-                },
-                new AuthenticationToken
+                    ClientId = _clientSettings.MultiShopManagerClient.ClientId,
+                    ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
+                    UserName = signInDto.Username,
+                    Password = signInDto.Password,
+                    Address = discoveryEndPoint.TokenEndpoint
+                };
+
+                var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+
+                if (token.IsError)
                 {
-                    Name=OpenIdConnectParameterNames.RefreshToken,
-                    Value = token.RefreshToken
-                },
-                new AuthenticationToken
-                {
-                    Name=OpenIdConnectParameterNames.ExpiresIn,
-                    Value=DateTime.Now.AddSeconds(token.ExpiresIn).ToString()
+                    throw new Exception($"Token request error: {token.Error}");
                 }
-            });
 
-            authenticationProperties.IsPersistent = false;
+                var userInfoRequest = new UserInfoRequest
+                {
+                    Token = token.AccessToken,
+                    Address = discoveryEndPoint.UserInfoEndpoint
+                };
 
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
+                var userValues = await _httpClient.GetUserInfoAsync(userInfoRequest);
 
-            return true;
+                if (userValues.IsError)
+                {
+                    throw new Exception($"User info request error: {userValues.Error}");
+                }
+
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
+
+                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                var authenticationProperties = new AuthenticationProperties();
+
+                authenticationProperties.StoreTokens(new List<AuthenticationToken>()
+        {
+            new AuthenticationToken
+            {
+                Name = OpenIdConnectParameterNames.AccessToken,
+                Value = token.AccessToken
+            },
+            new AuthenticationToken
+            {
+                Name = OpenIdConnectParameterNames.RefreshToken,
+                Value = token.RefreshToken
+            },
+            new AuthenticationToken
+            {
+                Name = OpenIdConnectParameterNames.ExpiresIn,
+                Value = DateTime.Now.AddSeconds(token.ExpiresIn).ToString()
+            }
+        });
+
+                authenticationProperties.IsPersistent = false;
+
+                await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
