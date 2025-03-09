@@ -1,0 +1,28 @@
+﻿@model List<ECommerceViewModel.Product>
+@{
+	ViewData["Title"] = "ECommerceList";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+	<br /> <br />
+	<table class="table table-bordered">
+		<tr>
+			<th>Ürün Görseli</th>
+			<th>Ürün Başlığı</th>
+			<th>Ürün Puanı</th>
+			<th>Ürün Fiyatı</th>
+			<th>Ürün Detayları</th>
+		</tr>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td><img src="@item.product_photos[0]" style="height:100px;width:100px" /></td>
+				<td>@item.product_title</td>
+				<td>@item.product_rating</td>
+				<td>@item.offer?.price</td>
+				<td><a href="@item.product_page_url" class="btn btn-primary">Ürün Detayları</a></td>
+			</tr>
+		}
+	</table>
+</div>
