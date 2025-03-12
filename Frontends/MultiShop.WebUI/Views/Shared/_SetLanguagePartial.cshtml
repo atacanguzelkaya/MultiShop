@@ -1,0 +1,13 @@
+﻿@inject IOptions<RequestLocalizationOptions> _locOptions
+@inject IHtmlLocalizer<SharedResource> _localizer
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = _locOptions.Value.SupportedCultures.Select(x => new SelectListItem { Text = x.DisplayName, Value = x.Name });
+}
+
+<form asp-controller="Default" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post">
+    <select class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" onchange="this.form.submit()" name="culture"
+            asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="@cultureItems">
+    </select>
+</form>

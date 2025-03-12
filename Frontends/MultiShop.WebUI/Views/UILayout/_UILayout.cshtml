@@ -1,9 +1,10 @@
-﻿@{
+﻿@using System.Globalization
+@{
     Layout = null;
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@(CultureInfo.CurrentCulture.Name)">
 
 @await Component.InvokeAsync("_HeadUILayoutComponentPartial")
 
