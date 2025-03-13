@@ -44,9 +44,11 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
                 await _productDetailService.CreateProductDetailAsync(createProductDetailDto);
                 return RedirectToAction("Index", "Product", new { area = "Admin" });
             }
-
-            await _productDetailService.UpdateProductDetailAsync(updateProductDetailDto);
-            return RedirectToAction("Index", "Product", new { area = "Admin" });
+            else
+            {
+                await _productDetailService.UpdateProductDetailAsync(updateProductDetailDto);
+                return RedirectToAction("Index", "Product", new { area = "Admin" });
+            }     
         }
     }
 }

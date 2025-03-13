@@ -21,8 +21,7 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductImageServices
         public async Task<GetByIdProductImageDto> GetByIdProductImageAsync(string id)
         {
             var responseMessage = await _httpClient.GetAsync("productimages/" + id);
-            var values = await responseMessage.Content.ReadFromJsonAsync<GetByIdProductImageDto>();
-            return values;
+            return await GetResponseContentAsync<GetByIdProductImageDto>(responseMessage);
         }
         public async Task<List<ResultProductImageDto>> GetAllProductImageAsync()
         {
@@ -39,8 +38,33 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductImageServices
         public async Task<GetByIdProductImageDto> GetByProductIdProductImageAsync(string id)
         {
             var responseMessage = await _httpClient.GetAsync("productimages/ProductImagesByProductId/" + id);
-            var values = await responseMessage.Content.ReadFromJsonAsync<GetByIdProductImageDto>();
-            return values;
+            return await GetResponseContentAsync<GetByIdProductImageDto>(responseMessage);
+        }
+
+        private async Task<T> GetResponseContentAsync<T>(HttpResponseMessage responseMessage)
+        {
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"HTTP Error: {responseMessage.StatusCode}");
+                return default;
+            }
+
+            var content = await responseMessage.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return default;
+            }
+            try
+            {
+                var result = JsonConvert.DeserializeObject<T>(content);
+                return result;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON deserialization error: {ex.Message}");
+                return default;
+            }
         }
     }
 }

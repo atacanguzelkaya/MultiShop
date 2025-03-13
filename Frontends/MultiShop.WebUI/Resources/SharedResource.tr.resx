@@ -135,11 +135,23 @@
   <data name="Aranacak Ürünü Giriniz" xml:space="preserve">
     <value>Aranacak Ürünü Giriniz</value>
   </data>
+  <data name="Elektronik" xml:space="preserve">
+    <value>Elektronik</value>
+  </data>
+  <data name="Ev &amp; Yaşam" xml:space="preserve">
+    <value>Ev &amp; Yaşam</value>
+  </data>
   <data name="Ev Dekorasyonu" xml:space="preserve">
     <value>Ev Dekorasyonu</value>
   </data>
+  <data name="Giriş Sayfası" xml:space="preserve">
+    <value>Giriş Sayfası</value>
+  </data>
   <data name="Giriş Yap" xml:space="preserve">
     <value>Giriş Yap</value>
+  </data>
+  <data name="Giyim" xml:space="preserve">
+    <value>Giyim</value>
   </data>
   <data name="Günün Fırsatı" xml:space="preserve">
     <value>Günün Fırsatı</value>
@@ -149,6 +161,12 @@
   </data>
   <data name="Kategoriler" xml:space="preserve">
     <value>Kategoriler</value>
+  </data>
+  <data name="Kayıt Sayfası" xml:space="preserve">
+    <value>Kayıt Sayfası</value>
+  </data>
+  <data name="Kozmetik" xml:space="preserve">
+    <value>Kozmetik</value>
   </data>
   <data name="Merhaba" xml:space="preserve">
     <value>Merhaba</value>

@@ -12,10 +12,16 @@ namespace MultiShop.WebUI.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
-
+        void RegisterViewBag()
+        {
+            ViewBag.directory1 = "MultiShop";
+            ViewBag.directory2 = "Kayıt Sayfası";
+            ViewBag.directory3 = "";
+        }
         [HttpGet]
         public IActionResult Index()
         {
+            RegisterViewBag();
             return View();
         }
 

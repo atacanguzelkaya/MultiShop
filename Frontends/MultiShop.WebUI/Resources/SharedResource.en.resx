@@ -135,11 +135,23 @@
   <data name="Aranacak Ürünü Giriniz" xml:space="preserve">
     <value>Enter the product to search for</value>
   </data>
+  <data name="Elektronik" xml:space="preserve">
+    <value>Electronic</value>
+  </data>
+  <data name="Ev &amp; Yaşam" xml:space="preserve">
+    <value>Home &amp; Life</value>
+  </data>
   <data name="Ev Dekorasyonu" xml:space="preserve">
     <value>Home Decoration</value>
   </data>
+  <data name="Giriş Sayfası" xml:space="preserve">
+    <value>Home Page</value>
+  </data>
   <data name="Giriş Yap" xml:space="preserve">
     <value>Login</value>
+  </data>
+  <data name="Giyim" xml:space="preserve">
+    <value>Clothes</value>
   </data>
   <data name="Günün Fırsatı" xml:space="preserve">
     <value>Daily Offer</value>
@@ -149,6 +161,12 @@
   </data>
   <data name="Kategoriler" xml:space="preserve">
     <value>Categories</value>
+  </data>
+  <data name="Kayıt Sayfası" xml:space="preserve">
+    <value>Registration Page</value>
+  </data>
+  <data name="Kozmetik" xml:space="preserve">
+    <value>Cosmetic</value>
   </data>
   <data name="Merhaba" xml:space="preserve">
     <value>Hello</value>
